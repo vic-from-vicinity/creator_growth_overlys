@@ -1,0 +1,76 @@
+{
+  "platformsList": {
+    "order": 1,
+    "type": "textarea",
+    "label": "Platforms (Name|Handle|URL per line)",
+    "rows": 8,
+    "placeholder": "Twitch|@username|twitch.tv/username\nYouTube|@username|youtube.com/@username",
+    "value": "Twitch|@username|twitch.tv/username\nYouTube|@username|youtube.com/@username\nTikTok|@username|tiktok.com/@username\nKick|@username|kick.com/username\nRumble|@username|rumble.com/c/username"
+  },
+  "rotationSpeed": {
+    "order": 2,
+    "type": "slider",
+    "label": "Rotation Speed (seconds)",
+    "value": 5,
+    "options": {
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "suffix": "s"
+    }
+  },
+  "theme": {
+    "order": 3,
+    "type": "dropdown",
+    "label": "Theme Preset",
+    "value": "sleek",
+    "options": {
+      "sleek": "Sleek (Minimal Dark)",
+      "bold": "Bold (Neon High-Contrast)",
+      "retro": "Retro (Pixel / Scanlines)",
+      "animated": "Animated (Pulsing Glow)"
+    }
+  },
+  "font": {
+    "order": 4,
+    "type": "fontpicker",
+    "label": "Font",
+    "value": "Inter"
+  },
+  "iconSize": {
+    "order": 5,
+    "type": "slider",
+    "label": "Icon Size",
+    "value": 48,
+    "options": {
+      "min": 24,
+      "max": 96,
+      "step": 4,
+      "suffix": "px"
+    }
+  },
+  "bgColor": {
+    "order": 6,
+    "type": "colorpicker",
+    "label": "Background Color",
+    "value": "#000000"
+  },
+  "textColor": {
+    "order": 7,
+    "type": "colorpicker",
+    "label": "Text Color",
+    "value": "#ffffff"
+  },
+  "accentColor": {
+    "order": 8,
+    "type": "colorpicker",
+    "label": "Accent Color",
+    "value": "#9146ff"
+  },
+  "showUrl": {
+    "order": 9,
+    "type": "checkbox",
+    "label": "Show URL text below handle",
+    "value": false
+  }
+}

@@ -1,0 +1,128 @@
+// --- State ---
+let platforms = [];
+let currentIndex = 0;
+let rotationTimer = null;
+let isPaused = false;
+
+// --- DOM refs ---
+const rotator = document.getElementById('social-rotator');
+const iconEl = document.getElementById('platform-icon');
+const nameEl = document.getElementById('platform-name');
+const handleEl = document.getElementById('platform-handle');
+const urlEl = document.getElementById('platform-url');
+
+// --- Helpers ---
+function normalizePlatformName(name) {
+  const lower = name.toLowerCase().trim();
+  // Map common aliases
+  if (['twitch', 'ttv'].includes(lower)) return 'twitch';
+  if (['youtube', 'yt'].includes(lower)) return 'youtube';
+  if (['tiktok', 'tt'].includes(lower)) return 'tiktok';
+  if (['kick'].includes(lower)) return 'kick';
+  if (['rumble'].includes(lower)) return 'rumble';
+  if (['discord', 'dc'].includes(lower)) return 'discord';
+  if (['twitter', 'x'].includes(lower)) return 'twitter';
+  if (['instagram', 'ig'].includes(lower)) return 'instagram';
+  if (['facebook', 'fb'].includes(lower)) return 'facebook';
+  if (['linkedin'].includes(lower)) return 'linkedin';
+  if (['github', 'gh'].includes(lower)) return 'github';
+  if (['spotify'].includes(lower)) return 'spotify';
+  if (['website', 'site', 'web', 'linktree', 'bio'].includes(lower)) return 'website';
+  return 'custom';
+}
+
+function parsePlatforms(raw) {
+  if (!raw || typeof raw !== 'string') return [];
+  const lines = raw.split(/\r?\n/);
+  const result = [];
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('#')) continue;
+    const parts = trimmed.split('|');
+    if (parts.length < 2) continue; // Need at least Name|Handle
+    const name = parts[0].trim();
+    const handle = parts[1].trim();
+    const url = parts[2] ? parts[2].trim() : '';
+    if (!name || !handle) continue;
+    result.push({ name, handle, url, platformKey: normalizePlatformName(name) });
+  }
+  return result;
+}
+
+function getInitial(name) {
+  return name.charAt(0).toUpperCase();
+}
+
+function renderPlatform(index) {
+  if (!platforms.length) {
+    nameEl.textContent = 'Add Platforms';
+    handleEl.textContent = 'in Configs sidebar';
+    iconEl.setAttribute('data-platform', 'custom');
+    iconEl.setAttribute('data-initial', '!');
+    urlEl.style.display = 'none';
+    return;
+  }
+
+  const p = platforms[index];
+  rotator.classList.add('fade-out');
+
+  setTimeout(() => {
+    nameEl.textContent = p.name;
+    handleEl.textContent = p.handle;
+    iconEl.setAttribute('data-platform', p.platformKey);
+    iconEl.setAttribute('data-initial', getInitial(p.name));
+
+    if (p.url && Overlay.data.showUrl) {
+      urlEl.textContent = p.url;
+      urlEl.style.display = 'block';
+    } else {
+      urlEl.style.display = 'none';
+    }
+
+    rotator.classList.remove('fade-out');
+  }, 500); // match CSS transition duration
+}
+
+function nextPlatform() {
+  if (!platforms.length || platforms.length === 1) return;
+  currentIndex = (currentIndex + 1) % platforms.length;
+  renderPlatform(currentIndex);
+}
+
+function startRotation() {
+  if (rotationTimer) clearInterval(rotationTimer);
+  const speed = parseInt(Overlay.data.rotationSpeed, 10) || 5;
+  if (platforms.length > 1) {
+    rotationTimer = setInterval(nextPlatform, speed * 1000);
+  }
+}
+
+function loadAndStart() {
+  platforms = parsePlatforms(Overlay.data.platformsList);
+  currentIndex = 0;
+  renderPlatform(0);
+  startRotation();
+}
+
+// --- Event: Config changed ---
+Overlay.on('configAction', ({ key }) => {
+  // Lumia fires this when any config field changes (save/refresh)
+  // We reload everything to pick up new values
+  loadAndStart();
+});
+
+// --- Init ---
+(async function init() {
+  // Try to restore saved index so rotation resumes where it left off
+  const savedIndex = await Overlay.getStorage('currentIndex');
+  if (savedIndex !== null && !isNaN(savedIndex)) {
+    currentIndex = parseInt(savedIndex, 10);
+  }
+
+  loadAndStart();
+
+  // Save index periodically so we don't always start at 0
+  setInterval(async () => {
+    await Overlay.saveStorage('currentIndex', currentIndex);
+  }, 30000);
+})();

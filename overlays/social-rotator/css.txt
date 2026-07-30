@@ -1,0 +1,171 @@
+/* Base reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: '{{font}}', sans-serif;
+  background: transparent;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Rotator container */
+#social-rotator {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  background: {{bgColor}};
+  color: {{textColor}};
+  min-width: 320px;
+  max-width: 500px;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+#social-rotator.fade-out {
+  opacity: 0;
+}
+
+/* Icon styling */
+.platform-icon {
+  width: {{iconSize}}px;
+  height: {{iconSize}}px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: calc({{iconSize}}px * 0.6);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Text area */
+.platform-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.platform-name {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: {{accentColor}};
+}
+
+.platform-handle {
+  font-size: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.platform-url {
+  font-size: 12px;
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- THEME: SLEEK --- */
+[data-theme="sleek"] #social-rotator {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="sleek"] .platform-icon {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* --- THEME: BOLD --- */
+[data-theme="bold"] #social-rotator {
+  background: {{bgColor}};
+  border: 2px solid {{accentColor}};
+  box-shadow: 0 0 20px {{accentColor}}, inset 0 0 10px rgba(0,0,0,0.5);
+  text-shadow: 0 0 8px {{accentColor}};
+}
+
+[data-theme="bold"] .platform-icon {
+  background: {{accentColor}};
+  color: {{bgColor}};
+  box-shadow: 0 0 12px {{accentColor}};
+}
+
+/* --- THEME: RETRO --- */
+[data-theme="retro"] #social-rotator {
+  background: {{bgColor}};
+  border: 2px solid {{accentColor}};
+  box-shadow: 4px 4px 0px {{accentColor}};
+  image-rendering: pixelated;
+}
+
+[data-theme="retro"] .platform-icon {
+  background: {{accentColor}};
+  color: {{bgColor}};
+  border-radius: 0;
+}
+
+[data-theme="retro"] .platform-handle {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+}
+
+/* --- THEME: ANIMATED --- */
+[data-theme="animated"] #social-rotator {
+  background: {{bgColor}};
+  border: 1px solid {{accentColor}};
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+[data-theme="animated"] .platform-icon {
+  background: {{accentColor}};
+  color: {{bgColor}};
+  animation: icon-bounce 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 10px {{accentColor}}; }
+  50% { box-shadow: 0 0 30px {{accentColor}}, 0 0 60px rgba(0,0,0,0.2); }
+}
+
+@keyframes icon-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Built-in platform icon colors */
+.platform-icon[data-platform="twitch"] { background: #9146ff; color: #fff; }
+.platform-icon[data-platform="youtube"] { background: #ff0000; color: #fff; }
+.platform-icon[data-platform="tiktok"] { background: #000000; color: #fff; border: 1px solid #fff; }
+.platform-icon[data-platform="kick"] { background: #53fc18; color: #000; }
+.platform-icon[data-platform="rumble"] { background: #85c742; color: #fff; }
+.platform-icon[data-platform="discord"] { background: #5865f2; color: #fff; }
+.platform-icon[data-platform="twitter"] { background: #1da1f2; color: #fff; }
+.platform-icon[data-platform="instagram"] { background: #e1306c; color: #fff; }
+.platform-icon[data-platform="facebook"] { background: #1877f2; color: #fff; }
+.platform-icon[data-platform="linkedin"] { background: #0a66c2; color: #fff; }
+.platform-icon[data-platform="github"] { background: #333; color: #fff; }
+.platform-icon[data-platform="spotify"] { background: #1db954; color: #fff; }
+.platform-icon[data-platform="website"] { background: {{accentColor}}; color: #fff; }
+.platform-icon[data-platform="custom"] { background: {{accentColor}}; color: #fff; }
+
+/* Generic fallback icon letter */
+.platform-icon::before {
+  content: attr(data-initial);
+}

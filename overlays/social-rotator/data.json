@@ -1,0 +1,11 @@
+{
+  "platformsList": "Twitch|@username|twitch.tv/username\nYouTube|@username|youtube.com/@username\nTikTok|@username|tiktok.com/@username\nKick|@username|kick.com/username\nRumble|@username|rumble.com/c/username",
+  "rotationSpeed": 5,
+  "theme": "sleek",
+  "font": "Inter",
+  "iconSize": 48,
+  "bgColor": "#000000",
+  "textColor": "#ffffff",
+  "accentColor": "#9146ff",
+  "showUrl": false
+}
