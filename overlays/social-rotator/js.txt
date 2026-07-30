@@ -2,6 +2,7 @@
 let platforms = [];
 let currentIndex = 0;
 let rotationTimer = null;
+let renderTimeout = null;
 
 // --- DOM refs ---
 const rotator = document.getElementById('social-rotator');
@@ -65,7 +66,8 @@ function renderPlatform(index) {
   const p = platforms[index];
   rotator.classList.add('fade-out');
 
-  setTimeout(() => {
+  if (renderTimeout) clearTimeout(renderTimeout);
+  renderTimeout = setTimeout(() => {
     nameEl.textContent = p.name;
     handleEl.textContent = p.handle;
     iconEl.setAttribute('data-platform', p.platformKey);
@@ -79,7 +81,7 @@ function renderPlatform(index) {
     }
 
     rotator.classList.remove('fade-out');
-  }, 500); // match CSS transition duration
+  }, 500); /* FADE_DURATION_MS: 500 — must match CSS transition */
 }
 
 function nextPlatform() {
@@ -108,22 +110,31 @@ function loadAndStart(resetIndex = false) {
 // --- Event: Config changed ---
 Overlay.on('configAction', ({ key }) => {
   // Lumia fires this when any config field changes (save/refresh)
-  // We reload everything to pick up new values, resetting rotation
-  loadAndStart(true);
+  // Only reset rotation position when the platform list itself changes
+  loadAndStart(key === 'platformsList');
 });
 
 // --- Init ---
 (async function init() {
   // Try to restore saved index so rotation resumes where it left off
-  const savedIndex = await Overlay.getStorage('currentIndex');
-  if (savedIndex !== null && !isNaN(savedIndex)) {
-    currentIndex = parseInt(savedIndex, 10);
+  try {
+    const savedIndex = await Overlay.getStorage('currentIndex');
+    if (savedIndex !== null && !isNaN(savedIndex)) {
+      currentIndex = parseInt(savedIndex, 10);
+    }
+  } catch (e) {
+    // Storage read failed — start fresh, not stuck
+    currentIndex = 0;
   }
 
   loadAndStart();
 
   // Save index periodically so we don't always start at 0
   setInterval(async () => {
-    await Overlay.saveStorage('currentIndex', currentIndex);
+    try {
+      await Overlay.saveStorage('currentIndex', currentIndex);
+    } catch (e) {
+      // Ignore storage write failures
+    }
   }, 30000);
 })();

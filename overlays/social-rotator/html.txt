@@ -3,6 +3,6 @@
   <div class="platform-info">
     <div class="platform-name" id="platform-name">Platform</div>
     <div class="platform-handle" id="platform-handle">@username</div>
-    <div class="platform-url" id="platform-url">url.com</div>
+    <div class="platform-url" id="platform-url" style="display: none;">url.com</div>
   </div>
 </div>
